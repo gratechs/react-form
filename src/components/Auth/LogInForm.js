@@ -25,7 +25,7 @@ const LogInForm = () => {
             />
             <a
               href="#nothing"
-              className="flex text-xs justify-center mb-6 font-bold "
+              className="flex text-xs justify-center mb-6 font-bold underline"
             >
               Forgot password
             </a>
