@@ -1,5 +1,7 @@
+import SignUpPage from "./pages/SignUpPage";
+
 function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return <SignUpPage />;
 }
 
 export default App;
