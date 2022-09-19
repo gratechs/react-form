@@ -1,9 +1,16 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Button from '../UI/Button';
 import authImage from '../../assets/bernard-hermant.jpg';
 
 const SignUpForm = () => {
+  const [nameValue, setNameValue] = useState('');
+
+  const nameChangeHandler = e => {
+    setNameValue(e.target.value);
+  };
+
   return (
     <section className="container max-w-screen-xl mx-auto my-8 px-12 py-14 text-center shadow-md bg-gray-300 rounded-lg sm:px-24 sm:py-20">
       <div className="shadow-2xl md:flex">
@@ -20,6 +27,8 @@ const SignUpForm = () => {
               placeholder="Name"
               required
               className="w-full text-gray-800 mb-6 pb-1 border-0 border-b border-gray-400 placeholder:text-sm focus:outline-none focus:border-gray-800 hover:border-gray-800 sm:w-9/12 md:w-10/12 lg:w-9/12"
+              onChange={nameChangeHandler}
+              value={nameValue}
             />
             <input
               type="email"
