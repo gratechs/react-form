@@ -29,7 +29,7 @@ const LogInForm = () => {
             >
               Forgot password
             </a>
-            <Button>Create account</Button>
+            <Button>Log in</Button>
           </form>
 
           <div className="flex justify-center space-x-1 text-xs">
