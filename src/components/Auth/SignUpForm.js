@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import Button from '../UI/Button';
 import authImage from '../../assets/bernard-hermant.jpg';
 
@@ -36,9 +38,9 @@ const SignUpForm = () => {
 
           <div className="flex justify-center space-x-1 text-xs">
             <p className="text-gray-600">Already have an account?</p>
-            <a href="#nothing" className="font-bold">
+            <Link to="/login" className="font-bold">
               Log in
-            </a>
+            </Link>
           </div>
         </div>
 

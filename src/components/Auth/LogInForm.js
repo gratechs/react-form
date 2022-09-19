@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import Button from '../UI/Button';
 import authImage from '../../assets/bernard-hermant.jpg';
 
@@ -23,20 +25,20 @@ const LogInForm = () => {
               required
               className="w-full text-gray-800 pb-1 mb-4 border-0 border-b border-gray-400 placeholder:text-sm focus:outline-none focus:border-gray-800 hover:border-gray-800 sm:w-9/12 md:w-10/12 lg:w-9/12"
             />
-            <a
-              href="#nothing"
+            <Link
+              to="/sign-up"
               className="flex text-xs justify-center mb-6 font-bold underline"
             >
               Forgot password
-            </a>
+            </Link>
             <Button>Log in</Button>
           </form>
 
           <div className="flex justify-center space-x-1 text-xs">
             <p className="text-gray-600">Don't have an account?</p>
-            <a href="#nothing" className="font-bold">
+            <Link to="/sign-up" className="font-bold">
               Sign up for free
-            </a>
+            </Link>
           </div>
         </div>
 
