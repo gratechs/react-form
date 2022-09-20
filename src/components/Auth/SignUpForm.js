@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import Button from '../UI/Button';
 import Card from '../UI/Card';
@@ -7,26 +7,34 @@ import Header from '../UI/Header';
 import Image from '../UI/Image';
 
 const SignUpForm = () => {
-  const [nameValue, setNameValue] = useState('');
-  const [emailValue, setEmailValue] = useState('');
-  const [passwordValue, setPasswordValue] = useState('');
+  // const [nameValue, setNameValue] = useState('');
+  // const [emailValue, setEmailValue] = useState('');
+  // const [passwordValue, setPasswordValue] = useState('');
+
+  const nameInputRef = useRef();
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
 
   const nameChangeHandler = e => {
-    setNameValue(e.target.value);
+    // setNameValue(e.target.value);
+    // console.log(nameInputRef.current.value);
   };
 
   const emailChangeHandler = e => {
-    setEmailValue(e.target.value);
+    // setEmailValue(e.target.value);
   };
 
   const passwordChangeHandler = e => {
-    setPasswordValue(e.target.value);
+    // setPasswordValue(e.target.value);
   };
 
   const submitHandler = e => {
     e.preventDefault();
+    const enteredName = nameInputRef.current.value;
+    const enteredEmail = emailInputRef.current.value;
+    const enteredPassword = passwordInputRef.current.value;
 
-    console.log(nameValue, emailValue, passwordValue);
+    console.log(enteredName, enteredEmail, enteredPassword);
   };
 
   return (
@@ -43,24 +51,24 @@ const SignUpForm = () => {
               placeholder="Name"
               required
               className="mb-6"
+              ref={nameInputRef}
               onChange={nameChangeHandler}
-              value={nameValue}
             />
             <input
               type="email"
               placeholder="Email"
               required
               className="mb-6"
+              ref={emailInputRef}
               onChange={emailChangeHandler}
-              value={emailValue}
             />
             <input
               type="password"
               placeholder="Password"
               required
               className="mb-8"
+              ref={passwordInputRef}
               onChange={passwordChangeHandler}
-              value={passwordValue}
             />
             <Button>Create account</Button>
           </form>
