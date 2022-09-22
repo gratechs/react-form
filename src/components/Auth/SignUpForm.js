@@ -17,6 +17,8 @@ const SignUpForm = () => {
   const [passwordValue, setPasswordValue] = useState('');
   const [passwordIsTouched, setPasswordIsTouched] = useState('');
 
+  const [closeError, setCloseError] = useState(false);
+
   const nameValueIsValid =
     nameValue.match(/^[A-Za-z]+$/) && nameValue.trim() !== '';
   const nameValueIsInvalid = !nameValueIsValid && nameIsTouched;
@@ -41,14 +43,21 @@ const SignUpForm = () => {
 
   const nameBlurHandler = () => {
     setNameIsTouched(true);
+    setCloseError(false);
   };
 
   const emailBlurHandler = () => {
     setEmailIsTouched(true);
+    setCloseError(false);
   };
 
   const passwordBlurHandler = () => {
     setPasswordIsTouched(true);
+    setCloseError(false);
+  };
+
+  const closeHandler = () => {
+    setCloseError(true);
   };
 
   const formSubmissionHandler = e => {
@@ -93,13 +102,25 @@ const SignUpForm = () => {
           {nameValueIsInvalid &&
             !emailValueIsInvalid &&
             !passwordValueIsInvalid && (
-              <ErrorMsg text="Name should contain only letters" />
+              <ErrorMsg
+                text="Name should contain only letters"
+                onClose={closeHandler}
+                closeError={closeError}
+              />
             )}
           {emailValueIsInvalid && !passwordValueIsInvalid && (
-            <ErrorMsg text="Please enter a valid email" />
+            <ErrorMsg
+              text="Please enter a valid email"
+              onClose={closeHandler}
+              closeError={closeError}
+            />
           )}
           {passwordValueIsInvalid && (
-            <ErrorMsg text="Please enter a valid password" />
+            <ErrorMsg
+              text="Please enter a valid password"
+              onClose={closeHandler}
+              closeError={closeError}
+            />
           )}
           <form onSubmit={formSubmissionHandler}>
             <input
