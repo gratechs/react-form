@@ -127,6 +127,7 @@ const SignUpForm = () => {
               type="text"
               placeholder="Name"
               required
+              autoFocus="autofocus"
               className={nameInputClasses}
               onChange={nameChangeHandler}
               onBlur={nameBlurHandler}
