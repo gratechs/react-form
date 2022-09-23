@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useReducer } from 'react';
 
 import Button from '../UI/Button';
 import Card from '../UI/Card';
@@ -7,52 +7,145 @@ import Header from '../UI/Header';
 import Image from '../UI/Image';
 import ErrorMsg from '../UI/ErrorMsg';
 
+const nameReducer = (state, action) => {
+  if (action.type === 'NAME_INPUT') {
+    return {
+      value: action.val,
+      isValid: action.val.match(/^[A-Za-z]+$/),
+      isTouched: state.isTouched,
+    };
+  }
+
+  if (action.type === 'NAME_BLUR') {
+    return {
+      value: state.value,
+      isValid: state.value.match(/^[A-Za-z]+$/),
+      isTouched: true,
+    };
+  }
+
+  if (action.type === 'NAME_RESET') {
+    return {
+      value: '',
+      isValid: null,
+      isTouched: false,
+    };
+  }
+
+  return { value: '', isValid: null, isTouched: false };
+};
+
+const emailReducer = (state, action) => {
+  if (action.type === 'EMAIL_INPUT') {
+    return {
+      value: action.val,
+      isValid: /\S+@\S+\.\S+/.test(action.val),
+      isTouched: state.isTouched,
+    };
+  }
+
+  if (action.type === 'EMAIL_BLUR') {
+    return {
+      value: state.value,
+      isValid: /\S+@\S+\.\S+/.test(state.value),
+      isTouched: true,
+    };
+  }
+
+  if (action.type === 'EMAIL_RESET') {
+    return {
+      value: '',
+      isValid: null,
+      isTouched: false,
+    };
+  }
+
+  return { value: '', isValid: null, isTouched: false };
+};
+
+const passwordReducer = (state, action) => {
+  if (action.type === 'PASSWORD_INPUT') {
+    return {
+      value: action.val,
+      isValid: action.val.trim() !== '',
+      isTouched: state.isTouched,
+    };
+  }
+
+  if (action.type === 'PASSWORD_BLUR') {
+    return {
+      value: state.value,
+      isValid: state.value.trim() !== '',
+      isTouched: true,
+    };
+  }
+
+  if (action.type === 'PASSWORD_RESET') {
+    return {
+      value: '',
+      isValid: null,
+      isTouched: false,
+    };
+  }
+
+  return { value: '', isValid: null, isTouched: false };
+};
+
 const SignUpForm = () => {
-  const [nameValue, setNameValue] = useState('');
-  const [nameIsTouched, setNameIsTouched] = useState(false);
+  const [nameState, dispatchName] = useReducer(nameReducer, {
+    value: '',
+    isValid: null,
+    isTouched: false,
+  });
 
-  const [emailValue, setEmailValue] = useState('');
-  const [emailIsTouched, setEmailIsTouched] = useState(false);
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: '',
+    isValid: null,
+    isTouched: false,
+  });
 
-  const [passwordValue, setPasswordValue] = useState('');
-  const [passwordIsTouched, setPasswordIsTouched] = useState('');
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
+    value: '',
+    isValid: null,
+    isTouched: false,
+  });
 
   const [closeError, setCloseError] = useState(false);
 
-  const nameValueIsValid =
-    nameValue.match(/^[A-Za-z]+$/) && nameValue.trim() !== '';
-  const nameValueIsInvalid = !nameValueIsValid && nameIsTouched;
+  const nameValueIsValid = nameState.isValid;
+  const nameValueIsInvalid = !nameValueIsValid && nameState.isTouched;
 
-  const emailValueIsValid = /\S+@\S+\.\S+/.test(emailValue);
-  const emailValueIsInvalid = !emailValueIsValid && emailIsTouched;
+  const emailValueIsValid = emailState.isValid;
+  const emailValueIsInvalid = !emailValueIsValid && emailState.isTouched;
 
-  const passwordValueIsValid = passwordValue.trim() !== '';
-  const passwordValueIsInvalid = !passwordValueIsValid && passwordIsTouched;
+  const passwordValueIsValid = passwordState.isValid;
+  const passwordValueIsInvalid =
+    !passwordValueIsValid && passwordState.isTouched;
 
   const nameChangeHandler = e => {
-    setNameValue(e.target.value);
+    dispatchName({ type: 'NAME_INPUT', val: e.target.value });
   };
 
   const emailChangeHandler = e => {
-    setEmailValue(e.target.value);
+    dispatchEmail({ type: 'EMAIL_INPUT', val: e.target.value });
   };
 
   const passwordChangeHandler = e => {
-    setPasswordValue(e.target.value);
+    dispatchPassword({ type: 'PASSWORD_INPUT', val: e.target.value });
   };
 
   const nameBlurHandler = () => {
-    setNameIsTouched(true);
+    dispatchName({ type: 'NAME_BLUR' });
     setCloseError(false);
   };
 
   const emailBlurHandler = () => {
-    setEmailIsTouched(true);
+    dispatchEmail({ type: 'EMAIL_BLUR' });
     setCloseError(false);
   };
 
   const passwordBlurHandler = () => {
-    setPasswordIsTouched(true);
+    dispatchPassword({ type: 'PASSWORD_BLUR' });
     setCloseError(false);
   };
 
@@ -63,20 +156,15 @@ const SignUpForm = () => {
   const formSubmissionHandler = e => {
     e.preventDefault();
 
-    if (!nameValueIsValid) {
+    if (!nameState.isValid) {
       return;
     }
 
-    console.log(nameValue, emailValue, passwordValue);
+    console.log(nameState.value, emailState.value, passwordState.value);
 
-    setNameValue('');
-    setNameIsTouched(false);
-
-    setEmailValue('');
-    setEmailIsTouched(false);
-
-    setPasswordValue('');
-    setPasswordIsTouched(false);
+    dispatchName({ type: 'NAME_RESET' });
+    dispatchEmail({ type: 'EMAIL_RESET' });
+    dispatchPassword({ type: 'PASSWORD_RESET' });
   };
 
   const nameInputClasses = nameValueIsInvalid
@@ -131,7 +219,7 @@ const SignUpForm = () => {
               className={nameInputClasses}
               onChange={nameChangeHandler}
               onBlur={nameBlurHandler}
-              value={nameValue}
+              value={nameState.value}
             />
             <input
               type="email"
@@ -140,7 +228,7 @@ const SignUpForm = () => {
               className={emailInputClasses}
               onChange={emailChangeHandler}
               onBlur={emailBlurHandler}
-              value={emailValue}
+              value={emailState.value}
             />
             <input
               type="password"
@@ -149,7 +237,7 @@ const SignUpForm = () => {
               className={passwordInputClasses}
               onChange={passwordChangeHandler}
               onBlur={passwordBlurHandler}
-              value={passwordValue}
+              value={passwordState.value}
             />
             <Button>Create account</Button>
           </form>
