@@ -1,4 +1,4 @@
-import { useState, useReducer } from 'react';
+import useInput from '../../hooks/use-input';
 
 import Button from '../UI/Button';
 import Card from '../UI/Card';
@@ -7,175 +7,73 @@ import Header from '../UI/Header';
 import Image from '../UI/Image';
 import ErrorMsg from '../UI/ErrorMsg';
 
-const nameReducer = (state, action) => {
-  if (action.type === 'NAME_INPUT') {
-    return {
-      value: action.val,
-      isValid: action.val.match(/^[A-Za-z]+$/),
-      isTouched: state.isTouched,
-    };
-  }
-
-  if (action.type === 'NAME_BLUR') {
-    return {
-      value: state.value,
-      isValid: state.value.match(/^[A-Za-z]+$/),
-      isTouched: true,
-    };
-  }
-
-  if (action.type === 'NAME_RESET') {
-    return {
-      value: '',
-      isValid: null,
-      isTouched: false,
-    };
-  }
-
-  return { value: '', isValid: null, isTouched: false };
-};
-
-const emailReducer = (state, action) => {
-  if (action.type === 'EMAIL_INPUT') {
-    return {
-      value: action.val,
-      isValid: /\S+@\S+\.\S+/.test(action.val),
-      isTouched: state.isTouched,
-    };
-  }
-
-  if (action.type === 'EMAIL_BLUR') {
-    return {
-      value: state.value,
-      isValid: /\S+@\S+\.\S+/.test(state.value),
-      isTouched: true,
-    };
-  }
-
-  if (action.type === 'EMAIL_RESET') {
-    return {
-      value: '',
-      isValid: null,
-      isTouched: false,
-    };
-  }
-
-  return { value: '', isValid: null, isTouched: false };
-};
-
-const passwordReducer = (state, action) => {
-  if (action.type === 'PASSWORD_INPUT') {
-    return {
-      value: action.val,
-      isValid: action.val.trim() !== '',
-      isTouched: state.isTouched,
-    };
-  }
-
-  if (action.type === 'PASSWORD_BLUR') {
-    return {
-      value: state.value,
-      isValid: state.value.trim() !== '',
-      isTouched: true,
-    };
-  }
-
-  if (action.type === 'PASSWORD_RESET') {
-    return {
-      value: '',
-      isValid: null,
-      isTouched: false,
-    };
-  }
-
-  return { value: '', isValid: null, isTouched: false };
-};
+const isLetters = value => value.match(/^[A-Za-z]+$/);
+const isValidEmail = value => /\S+@\S+\.\S+/.test(value);
+const isNotEmpty = value => value.trim() !== '';
 
 const SignUpForm = () => {
-  const [nameState, dispatchName] = useReducer(nameReducer, {
-    value: '',
-    isValid: null,
-    isTouched: false,
-  });
+  const {
+    value: nameValue,
+    isValid: nameIsValid,
+    hasError: nameHasError,
+    valueChangeHandler: nameChangeHandler,
+    inputBlurHandler: nameBlurHandler,
+    reset: nameReset,
+    closeError: nameCloseError,
+    closeErrorHandler: nameCloseErrorHandler,
+  } = useInput(isLetters);
 
-  const [emailState, dispatchEmail] = useReducer(emailReducer, {
-    value: '',
-    isValid: null,
-    isTouched: false,
-  });
+  const {
+    value: emailValue,
+    isValid: emailIsValid,
+    hasError: emailHasError,
+    valueChangeHandler: emailChangeHandler,
+    inputBlurHandler: emailBlurHandler,
+    reset: emailReset,
+    closeError: emailCloseError,
+    closeErrorHandler: emailCloseErrorHandler,
+  } = useInput(isValidEmail);
 
-  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
-    value: '',
-    isValid: null,
-    isTouched: false,
-  });
+  const {
+    value: passwordValue,
+    isValid: passwordIsValid,
+    hasError: passwordHasError,
+    valueChangeHandler: passwordChangeHandler,
+    inputBlurHandler: passwordBlurHandler,
+    reset: passwordReset,
+    closeError: passwordCloseError,
+    closeErrorHandler: passwordCloseErrorHandler,
+  } = useInput(isNotEmpty);
 
-  const [closeError, setCloseError] = useState(false);
+  let formIsValid = false;
 
-  const nameValueIsValid = nameState.isValid;
-  const nameValueIsInvalid = !nameValueIsValid && nameState.isTouched;
-
-  const emailValueIsValid = emailState.isValid;
-  const emailValueIsInvalid = !emailValueIsValid && emailState.isTouched;
-
-  const passwordValueIsValid = passwordState.isValid;
-  const passwordValueIsInvalid =
-    !passwordValueIsValid && passwordState.isTouched;
-
-  const nameChangeHandler = e => {
-    dispatchName({ type: 'NAME_INPUT', val: e.target.value });
-  };
-
-  const emailChangeHandler = e => {
-    dispatchEmail({ type: 'EMAIL_INPUT', val: e.target.value });
-  };
-
-  const passwordChangeHandler = e => {
-    dispatchPassword({ type: 'PASSWORD_INPUT', val: e.target.value });
-  };
-
-  const nameBlurHandler = () => {
-    dispatchName({ type: 'NAME_BLUR' });
-    setCloseError(false);
-  };
-
-  const emailBlurHandler = () => {
-    dispatchEmail({ type: 'EMAIL_BLUR' });
-    setCloseError(false);
-  };
-
-  const passwordBlurHandler = () => {
-    dispatchPassword({ type: 'PASSWORD_BLUR' });
-    setCloseError(false);
-  };
-
-  const closeHandler = () => {
-    setCloseError(true);
-  };
+  if (nameIsValid && emailIsValid && passwordIsValid) {
+    formIsValid = true;
+  }
 
   const formSubmissionHandler = e => {
     e.preventDefault();
 
-    if (!nameState.isValid) {
+    if (!formIsValid) {
       return;
     }
 
-    console.log(nameState.value, emailState.value, passwordState.value);
+    console.log(nameValue, emailValue, passwordValue);
 
-    dispatchName({ type: 'NAME_RESET' });
-    dispatchEmail({ type: 'EMAIL_RESET' });
-    dispatchPassword({ type: 'PASSWORD_RESET' });
+    nameReset();
+    emailReset();
+    passwordReset();
   };
 
-  const nameInputClasses = nameValueIsInvalid
+  const nameInputClasses = nameHasError
     ? 'mb-6 border-red-400 hover:border-red-400'
     : 'mb-6';
 
-  const emailInputClasses = emailValueIsInvalid
+  const emailInputClasses = emailHasError
     ? 'mb-6 border-red-400 hover:border-red-400'
     : 'mb-6';
 
-  const passwordInputClasses = passwordValueIsInvalid
+  const passwordInputClasses = passwordHasError
     ? 'mb-6 border-red-400 hover:border-red-400'
     : 'mb-6';
 
@@ -187,27 +85,25 @@ const SignUpForm = () => {
             header="Create an account"
             paragraph="Let's get started with your 30 day free trial"
           />
-          {nameValueIsInvalid &&
-            !emailValueIsInvalid &&
-            !passwordValueIsInvalid && (
-              <ErrorMsg
-                text="Name should contain only letters"
-                onClose={closeHandler}
-                closeError={closeError}
-              />
-            )}
-          {emailValueIsInvalid && !passwordValueIsInvalid && (
+          {nameHasError && !emailHasError && !passwordHasError && (
             <ErrorMsg
-              text="Please enter a valid email"
-              onClose={closeHandler}
-              closeError={closeError}
+              text="Name should contain only letters"
+              onClose={nameCloseErrorHandler}
+              closeError={nameCloseError}
             />
           )}
-          {passwordValueIsInvalid && (
+          {emailHasError && !passwordHasError && (
+            <ErrorMsg
+              text="Please enter a valid email"
+              onClose={emailCloseErrorHandler}
+              closeError={emailCloseError}
+            />
+          )}
+          {passwordHasError && (
             <ErrorMsg
               text="Please enter a valid password"
-              onClose={closeHandler}
-              closeError={closeError}
+              onClose={passwordCloseErrorHandler}
+              closeError={passwordCloseError}
             />
           )}
           <form onSubmit={formSubmissionHandler}>
@@ -219,7 +115,7 @@ const SignUpForm = () => {
               className={nameInputClasses}
               onChange={nameChangeHandler}
               onBlur={nameBlurHandler}
-              value={nameState.value}
+              value={nameValue}
             />
             <input
               type="email"
@@ -228,7 +124,7 @@ const SignUpForm = () => {
               className={emailInputClasses}
               onChange={emailChangeHandler}
               onBlur={emailBlurHandler}
-              value={emailState.value}
+              value={emailValue}
             />
             <input
               type="password"
@@ -237,7 +133,7 @@ const SignUpForm = () => {
               className={passwordInputClasses}
               onChange={passwordChangeHandler}
               onBlur={passwordBlurHandler}
-              value={passwordState.value}
+              value={passwordValue}
             />
             <Button>Create account</Button>
           </form>
