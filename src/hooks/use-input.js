@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react';
+import { useReducer } from 'react';
 
 const initialInputState = {
   value: '',
@@ -8,16 +8,32 @@ const initialInputState = {
 
 const inputStateReducer = (state, action) => {
   if (action.type === 'INPUT') {
-    return { value: action.value, isTouched: state.isTouched };
+    return {
+      value: action.value,
+      isTouched: state.isTouched,
+      closeError: state.closeError,
+    };
   }
   if (action.type === 'BLUR') {
-    return { value: state.value, isTouched: true };
+    return {
+      value: state.value,
+      isTouched: true,
+      closeError: false,
+    };
   }
   if (action.type === 'RESET') {
-    return { value: '', isTouched: false };
+    return {
+      value: '',
+      isTouched: false,
+      closeError: state.closeError,
+    };
   }
   if (action.type === 'CLOSE_ERROR_MSG') {
-    return { value: state.value, isTouched: state.isTouched };
+    return {
+      value: state.value,
+      isTouched: false,
+      closeError: true,
+    };
   }
   return initialInputState;
 };
@@ -28,8 +44,6 @@ const useInput = (validateValue = () => {}) => {
     initialInputState
   );
 
-  const [closeError, setCloseError] = useState(false);
-
   const valueIsValid = validateValue(inputState.value);
   const hasError = !valueIsValid && inputState.isTouched;
 
@@ -39,7 +53,6 @@ const useInput = (validateValue = () => {}) => {
 
   const inputBlurHandler = () => {
     dispatch({ type: 'BLUR' });
-    setCloseError(false);
   };
 
   const reset = () => {
@@ -47,7 +60,7 @@ const useInput = (validateValue = () => {}) => {
   };
 
   const closeErrorHandler = () => {
-    setCloseError(true);
+    dispatch({ type: 'CLOSE_ERROR_MSG' });
   };
 
   return {
@@ -58,7 +71,7 @@ const useInput = (validateValue = () => {}) => {
     inputBlurHandler,
     reset,
     closeErrorHandler,
-    closeError,
+    closeError: inputState.closeError,
   };
 };
 

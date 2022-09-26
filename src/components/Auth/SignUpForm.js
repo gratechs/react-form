@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import useInput from '../../hooks/use-input';
 
 import Button from '../UI/Button';
@@ -12,6 +13,8 @@ const isValidEmail = value => /\S+@\S+\.\S+/.test(value);
 const isNotEmpty = value => value.trim() !== '';
 
 const SignUpForm = () => {
+  const focused = useRef();
+
   const {
     value: nameValue,
     isValid: nameIsValid,
@@ -63,6 +66,7 @@ const SignUpForm = () => {
     nameReset();
     emailReset();
     passwordReset();
+    focused.current.focus();
   };
 
   const nameInputClasses = nameHasError
@@ -113,6 +117,7 @@ const SignUpForm = () => {
               required
               autoFocus="autofocus"
               className={nameInputClasses}
+              ref={focused}
               onChange={nameChangeHandler}
               onBlur={nameBlurHandler}
               value={nameValue}
