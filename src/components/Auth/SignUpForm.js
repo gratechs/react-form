@@ -7,12 +7,13 @@ import Footer from '../UI/Footer';
 import Header from '../UI/Header';
 import Image from '../UI/Image';
 import ErrorMsg from '../UI/ErrorMsg';
+import FetchError from '../UI/FetchError';
 
 const isLetters = value => value.match(/^[A-Za-z]+$/);
 const isValidEmail = value => /\S+@\S+\.\S+/.test(value);
 const isNotEmpty = value => value.trim() !== '';
 
-const SignUpForm = () => {
+const SignUpForm = props => {
   const focused = useRef();
 
   const {
@@ -61,7 +62,13 @@ const SignUpForm = () => {
       return;
     }
 
-    console.log(nameValue, emailValue, passwordValue);
+    const formInfo = {
+      name: nameValue,
+      email: emailValue,
+      password: passwordValue,
+    };
+
+    props.onAddFormInfo(formInfo);
 
     nameReset();
     emailReset();
@@ -89,6 +96,10 @@ const SignUpForm = () => {
             header="Create an account"
             paragraph="Let's get started with your 30 day free trial"
           />
+          {props.error &&
+            !nameHasError &&
+            !emailHasError &&
+            !passwordHasError && <FetchError text={props.error} />}
           {nameHasError && !emailHasError && !passwordHasError && (
             <ErrorMsg
               text="Name should contain only letters"
