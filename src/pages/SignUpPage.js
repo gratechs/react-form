@@ -10,7 +10,7 @@ const SignUpPage = () => {
   // Sending data to database
   const addFormInfoHandler = async form => {
     try {
-      const response = await fetch(
+      await fetch(
         'https://react-form-ab7cd-default-rtdb.firebaseio.com/form.json',
         {
           method: 'POST',
@@ -20,8 +20,6 @@ const SignUpPage = () => {
           },
         }
       );
-
-      console.log(response);
       navigate('/login');
     } catch (err) {
       setError('Something went wrong!');
