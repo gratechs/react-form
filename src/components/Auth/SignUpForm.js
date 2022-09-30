@@ -99,7 +99,9 @@ const SignUpForm = props => {
           {props.error &&
             !nameHasError &&
             !emailHasError &&
-            !passwordHasError && <FetchError text={props.error} />}
+            !passwordHasError && (
+              <FetchError text={props.error} onClose={props.onCloseError} />
+            )}
           {nameHasError && !emailHasError && !passwordHasError && (
             <ErrorMsg
               text="Name should contain only letters"

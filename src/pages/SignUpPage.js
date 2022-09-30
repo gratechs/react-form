@@ -32,9 +32,17 @@ const SignUpPage = () => {
     errorMsg = error;
   }
 
+  const closeErrorMsgHandler = () => {
+    setError(null);
+  };
+
   return (
     <Fragment>
-      <SignUpForm onAddFormInfo={addFormInfoHandler} error={errorMsg} />
+      <SignUpForm
+        onAddFormInfo={addFormInfoHandler}
+        error={errorMsg}
+        onCloseError={closeErrorMsgHandler}
+      />
     </Fragment>
   );
 };

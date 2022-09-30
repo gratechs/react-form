@@ -8,11 +8,12 @@ import Footer from '../UI/Footer';
 import Header from '../UI/Header';
 import Image from '../UI/Image';
 import ErrorMsg from '../UI/ErrorMsg';
+import FetchError from '../UI/FetchError';
 
 const isValidEmail = value => /\S+@\S+\.\S+/.test(value);
 const isNotEmpty = value => value.trim() !== '';
 
-const LogInForm = () => {
+const LogInForm = props => {
   const focused = useRef();
 
   const {
@@ -50,7 +51,13 @@ const LogInForm = () => {
       return;
     }
 
-    console.log(emailValue, passwordValue);
+    const formValue = {
+      email: emailValue,
+      password: passwordValue,
+    };
+
+    // props.onFetchFormValue();
+    props.onCompareFormValue(formValue);
 
     emailReset();
     passwordReset();
@@ -73,6 +80,9 @@ const LogInForm = () => {
             header="Welcome back"
             paragraph="Welcome back! Please enter your details"
           />
+          {props.error && !emailHasError && !passwordHasError && (
+            <FetchError text={props.error} onClose={props.onCloseError} />
+          )}
           {emailHasError && !passwordHasError && (
             <ErrorMsg
               text="Please enter a valid email"
