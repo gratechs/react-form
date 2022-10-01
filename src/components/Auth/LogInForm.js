@@ -56,7 +56,6 @@ const LogInForm = props => {
       password: passwordValue,
     };
 
-    // props.onFetchFormValue();
     props.onCompareFormValue(formValue);
 
     emailReset();
